@@ -235,6 +235,13 @@
     .closing-mark { color: var(--muted); font-family: var(--sans); font-size: 9px; line-height: 1.8; text-align: right; text-transform: uppercase; }
     footer { padding: 18px 8vw 23px; color: #93877b; background: #f3eee6; font-family: var(--sans); font-size: 9px; text-align: center; text-transform: uppercase; }
 
+    /* When GSAP drives motion, CSS entrance transitions stand down (avoids per-frame interpolation lag);
+       transforms/opacities stay free for GSAP inline styles, and final states remain visible for fallbacks. */
+    html.gsap-on .hero-waterfall figure, html.gsap-on .is-open .hero-waterfall figure { transition: none !important; }
+    html.gsap-on .veil-stage img { filter: none; transform: none; transition: none !important; }
+    html.gsap-on .salon-stage figure { opacity: 1; transition: none !important; }
+    html.gsap-on .silk-stroke, html.gsap-on .garden-vine { transition: none !important; }
+
     .export-mode, .export-mode body { scroll-behavior: auto !important; }
     .export-mode .hero-action, .export-mode .cover-scroll { display: none; }
     .export-mode .cover-veil { opacity: .2; }
@@ -406,6 +413,7 @@
     <footer>Made with love · <span data-bind="date"></span></footer>
   </main>
 
+  <script src="assets/gsap.min.js"></script>
   <script>
     const names = `${CONFIG.groom} & ${CONFIG.bride}`;
     const binders = { names, groom: CONFIG.groom, bride: CONFIG.bride, date: CONFIG.date, lunar: CONFIG.lunar, weekday: CONFIG.weekday, time: CONFIG.time, venue: CONFIG.venue, address: CONFIG.address, phone: CONFIG.phone };
@@ -432,22 +440,82 @@
     Promise.all([...document.images].map((image) => image.decode ? image.decode().catch(() => {}) : Promise.resolve())).then(markReady);
     if (document.readyState === 'complete') markReady(); else addEventListener('load', markReady, { once: true });
     window.setTimeout(markReady, 2600);
+
+    // GSAP owns motion when available; CSS defaults keep everything visible for no-JS, export and reduced-motion paths.
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const gsapOn = typeof gsap !== 'undefined' && !reducedMotion && !new URLSearchParams(location.search).has('export');
+    if (gsapOn) {
+      root.classList.add('gsap-on');
+      gsap.defaults({ ease: 'power3.out', duration: .8 });
+      gsap.timeline({ defaults: { ease: 'power3.out' } })
+        .from('.cover-frame', { autoAlpha: 0, duration: 1.3, ease: 'power2.out' }, 0)
+        .from('.cover-supra span', { y: -14, autoAlpha: 0, stagger: .12, duration: .7 }, .15)
+        .from('.hero-eyebrow', { y: 16, autoAlpha: 0, duration: .7 }, .45)
+        .from('.hero-title span', { y: 52, autoAlpha: 0, stagger: .15, duration: 1.15, ease: 'expo.out' }, .55)
+        .from('.hero-subtitle', { y: 18, autoAlpha: 0, duration: .7 }, 1.05)
+        .from('.hero-date', { y: 18, autoAlpha: 0, duration: .7 }, 1.15)
+        .from('.hero-action', { y: 24, autoAlpha: 0, scale: .92, duration: .85, ease: 'back.out(1.6)' }, 1.3)
+        .from('.cover-scroll', { autoAlpha: 0, duration: .9 }, 1.6);
+    }
+
     openButton.addEventListener('click', () => {
       const open = root.classList.toggle('is-open');
       openButton.setAttribute('aria-expanded', String(open));
       waterfall.setAttribute('aria-hidden', String(!open));
       openButton.querySelector('.hero-action-label').innerHTML = open ? '<span>invitation opened</span><small>已开启 · 向下探索</small>' : '<span>open invitation</span><small>开启请柬</small>';
       cover.setAttribute('data-open', String(open));
+      if (gsapOn && open) {
+        gsap.timeline({ defaults: { ease: 'power3.out' } })
+          .fromTo('.hero-waterfall figure',
+            { autoAlpha: 0, y: 66, rotation: 0, scale: .95 },
+            { autoAlpha: 1, y: 0, scale: 1, rotation: (i) => [-3, 4, -4, 1.5][i], duration: .95, stagger: .13, ease: 'back.out(1.5)' }, .22);
+      }
     });
 
+    const played = new WeakSet();
+    function playScene(scene) {
+      if (!gsapOn || played.has(scene)) return;
+      played.add(scene);
+      const figures = scene.querySelectorAll('.scene-stage figure');
+      const note = scene.querySelector('.scene-note');
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      tl.from(scene.querySelector('.scene-backdrop'), { autoAlpha: 0, scale: 1.1, duration: 1.9, ease: 'power2.out' }, 0)
+        .from(scene.querySelector('.scene-shade'), { autoAlpha: 0, duration: 1.3 }, 0)
+        .from(scene.querySelector('.scene-index'), { y: 14, autoAlpha: 0, duration: .6 }, .1)
+        .from(scene.querySelector('.scene-head h2'), { y: 38, autoAlpha: 0, duration: .95, ease: 'expo.out' }, .18)
+        .from(scene.querySelector('.scene-english'), { x: 16, autoAlpha: 0, duration: .7 }, .42)
+        .from(scene.querySelector('.scene-copy'), { y: 24, autoAlpha: 0, duration: .8 }, .5);
+      if (scene.id === 'scene-veil') {
+        tl.from(figures, { autoAlpha: 0, y: '+=40', stagger: .15, duration: 1.05, ease: 'power2.out' }, .45)
+          .fromTo(scene.querySelectorAll('.veil-stage img'), { filter: 'blur(10px) saturate(.85)', scale: 1.045 }, { filter: 'blur(0px) saturate(1)', scale: 1, duration: 1.3, stagger: .15, ease: 'power2.out' }, .5)
+          .from(scene.querySelectorAll('.petal'), { autoAlpha: 0, y: '+=28', rotation: '+=8', scale: .9, stagger: .2, duration: 1, ease: 'back.out(1.4)' }, .75);
+      } else if (scene.id === 'scene-salon') {
+        tl.from(figures, { autoAlpha: 0, rotationY: -16, y: '+=28', transformOrigin: '50% 50%', stagger: .16, duration: 1.1, ease: 'power2.out' }, .45)
+          .fromTo(scene.querySelector('.castle-lance'), { scaleY: 0 }, { scaleY: 1, transformOrigin: 'top center', duration: .9, ease: 'power2.out' }, 1.0);
+      } else if (scene.id === 'scene-vow') {
+        tl.from(figures, { autoAlpha: 0, x: (i) => [-44, 36, -32][i], stagger: .16, duration: 1.05, ease: 'power2.out' }, .45)
+          .fromTo(scene.querySelector('.silk-stroke'), { xPercent: -100 }, { xPercent: 0, duration: 1.25, ease: 'power2.inOut' }, .6);
+      } else if (scene.id === 'scene-garden') {
+        tl.from(figures, { autoAlpha: 0, y: '+=44', scale: .95, stagger: .16, duration: 1.1, ease: 'power2.out' }, .45)
+          .from(scene.querySelector('.moon-disc'), { scale: 0, rotation: 120, autoAlpha: 0, duration: .9, ease: 'back.out(1.7)' }, .8)
+          .fromTo(scene.querySelector('.garden-vine'), { scaleY: 0, rotation: -9 }, { scaleY: 1, rotation: -9, transformOrigin: 'top center', duration: 1, ease: 'power2.out' }, .95);
+      }
+      tl.from(note, { y: 20, autoAlpha: 0, duration: .7 }, '>-=.35');
+    }
+
     const scenes = document.querySelectorAll('.scene');
-    const reveal = () => scenes.forEach((scene) => { const rect = scene.getBoundingClientRect(); if (rect.top < innerHeight * .92 && rect.bottom > 0) scene.classList.add('in-view'); });
+    function activateScene(scene) {
+      if (scene.classList.contains('in-view')) return;
+      scene.classList.add('in-view');
+      playScene(scene);
+    }
+    const reveal = () => scenes.forEach((scene) => { const rect = scene.getBoundingClientRect(); if (rect.top < innerHeight * .92 && rect.bottom > 0) activateScene(scene); });
     addEventListener('scroll', reveal, { passive: true });
     addEventListener('resize', reveal);
-    if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      const observer = new IntersectionObserver((entries) => entries.forEach((entry) => { if (entry.isIntersecting) { entry.target.classList.add('in-view'); observer.unobserve(entry.target); } }), { threshold: .18 });
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => entries.forEach((entry) => { if (entry.isIntersecting) { activateScene(entry.target); observer.unobserve(entry.target); } }), { threshold: .18 });
       scenes.forEach((scene) => observer.observe(scene));
-    } else scenes.forEach((scene) => scene.classList.add('in-view'));
+    } else scenes.forEach(activateScene);
     if (new URLSearchParams(location.search).has('export')) { root.classList.add('export-mode', 'is-ready', 'is-open'); scenes.forEach((scene) => scene.classList.add('in-view')); }
   </script>
 </body>
