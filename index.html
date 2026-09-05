@@ -416,7 +416,8 @@
     const waterfall = document.getElementById('invitation-flow');
     const markReady = () => root.classList.add('is-ready');
     Promise.all([...document.images].map((image) => image.decode ? image.decode().catch(() => {}) : Promise.resolve())).then(markReady);
-    if ([...document.images].every((image) => image.complete)) markReady();
+    if (document.readyState === 'complete') markReady(); else addEventListener('load', markReady, { once: true });
+    window.setTimeout(markReady, 2600);
     openButton.addEventListener('click', () => {
       const open = root.classList.toggle('is-open');
       openButton.setAttribute('aria-expanded', String(open));
