@@ -51,8 +51,10 @@
 
     /* Opening: the image clears first, then the invitation transforms into a compact navigation cue. */
     .cover { position: relative; isolation: isolate; min-height: 100svh; overflow: hidden; background: #e6e2dc; }
-    .cover-media { position: absolute; z-index: -3; inset: -4%; width: 108%; height: 108%; object-fit: cover; object-position: 50% 42%; filter: blur(18px) saturate(.72) brightness(1.08); transform: scale(1.06); opacity: .72; transition: filter 1.8s cubic-bezier(.2,.7,.2,1), transform 2s cubic-bezier(.2,.7,.2,1), opacity 1.5s ease; }
-    .is-ready .cover-media { filter: blur(0) saturate(.82) brightness(1.04); transform: scale(1); opacity: .9; }
+    .cover-media { position: absolute; z-index: -3; inset: -4%; width: 108%; height: 108%; object-fit: cover; object-position: 50% 46%; filter: blur(30px) saturate(.65) brightness(1.12); transform: scale(1.14); opacity: .8; transition: filter 2.2s cubic-bezier(.2,.7,.2,1), transform 2.4s cubic-bezier(.2,.7,.2,1), opacity 1.8s ease; }
+    .is-ready .cover-media { filter: blur(0) saturate(.92) brightness(1.02); transform: scale(1); opacity: .96; }
+    .cover-veil { position: absolute; z-index: 0; inset: 0; background: linear-gradient(165deg, rgba(243,239,232,.97) 0%, rgba(243,239,232,.42) 42%, rgba(236,231,223,.9) 100%); opacity: 1; transition: opacity 1.9s ease; pointer-events: none; }
+    .is-ready .cover-veil { opacity: .2; }
     .cover::before { content: ""; position: absolute; z-index: -2; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,.6), rgba(255,255,255,.05) 55%, rgba(222,219,213,.35)); }
     .cover::after { content: ""; position: absolute; z-index: -1; inset: 0; background: radial-gradient(circle at 50% 52%, transparent 0 24%, rgba(250,249,246,.16) 55%, rgba(239,235,229,.3) 100%); pointer-events: none; }
     .cover-scrim { position: absolute; z-index: 0; inset: 0; background: rgba(255,255,255,.12); transition: opacity 1s ease; }
@@ -85,15 +87,20 @@
     .cover-scroll { position: absolute; left: 50%; bottom: max(26px, env(safe-area-inset-bottom)); transform: translateX(-50%); color: rgba(41,36,32,.64); font-family: var(--sans); font-size: 9px; text-transform: uppercase; }
     .cover-scroll::after { content: ""; display: block; width: 1px; height: 38px; margin: 9px auto 0; background: currentColor; animation: scroll-line 1.8s ease-in-out infinite; transform-origin: top; }
     @keyframes scroll-line { 0%, 100% { transform: scaleY(.2); opacity: .3; } 50% { transform: scaleY(1); opacity: .9; } }
-    .hero-waterfall { position: absolute; z-index: 1; top: 15%; right: 5vw; width: min(72vw, 520px); height: 73%; opacity: 0; pointer-events: none; transition: opacity .7s ease .35s; }
-    .hero-waterfall figure { position: absolute; width: 42%; margin: 0; overflow: hidden; background: rgba(255,255,255,.34); box-shadow: 0 12px 32px rgba(59,53,46,.1); }
-    .hero-waterfall figure:nth-child(1) { top: 0; left: 6%; transform: rotate(-3deg); }
-    .hero-waterfall figure:nth-child(2) { top: 13%; right: 0; transform: rotate(4deg); }
-    .hero-waterfall figure:nth-child(3) { right: 15%; bottom: 0; transform: rotate(-2deg); }
+    .hero-waterfall { position: absolute; z-index: 1; top: 13%; right: 5vw; width: min(76vw, 560px); height: 76%; opacity: 0; pointer-events: none; transition: opacity .8s ease .3s; }
+    .hero-waterfall figure { position: absolute; width: 44%; margin: 0; overflow: hidden; background: rgba(255,255,255,.38); box-shadow: 0 14px 34px rgba(59,53,46,.12); opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .85s cubic-bezier(.2,.7,.2,1); }
+    .hero-waterfall figure:nth-child(1) { top: 0; right: 3%; }
+    .hero-waterfall figure:nth-child(2) { top: 22%; left: 0; width: 40%; }
+    .hero-waterfall figure:nth-child(3) { top: 43%; right: 8%; width: 38%; }
+    .hero-waterfall figure:nth-child(4) { bottom: 0; left: 1%; width: 82%; }
     .hero-waterfall img { width: 100%; height: 100%; object-fit: cover; }
-    .hero-waterfall figure:nth-child(1) img { aspect-ratio: 2 / 3; }
-    .hero-waterfall figure:nth-child(2) img { aspect-ratio: 2 / 3; }
-    .hero-waterfall figure:nth-child(3) img { aspect-ratio: 2 / 3; }
+    .hero-waterfall figure:nth-child(-n+3) img { aspect-ratio: 2 / 3; }
+    .hero-waterfall figure:nth-child(4) img { aspect-ratio: 3 / 2; }
+    .is-open .hero-waterfall { opacity: 1; }
+    .is-open .hero-waterfall figure:nth-child(1) { opacity: 1; transform: rotate(-3deg); transition-delay: .12s; }
+    .is-open .hero-waterfall figure:nth-child(2) { opacity: 1; transform: rotate(4deg); transition-delay: .24s; }
+    .is-open .hero-waterfall figure:nth-child(3) { opacity: 1; transform: rotate(-4deg); transition-delay: .36s; }
+    .is-open .hero-waterfall figure:nth-child(4) { opacity: 1; transform: rotate(1.5deg); transition-delay: .48s; }
     .is-open .cover-scrim { opacity: .3; }
     .is-open .cover-supra span:first-child { opacity: 0; }
     .is-open .hero-intro { top: max(34px, env(safe-area-inset-top)); left: 8vw; width: auto; text-align: left; transform: translate(0,0); }
@@ -147,6 +154,8 @@
     .veil-stage .veil-wide { left: 2%; bottom: 0; width: 75%; height: 31%; transform: rotate(1deg); clip-path: polygon(2% 0, 100% 6%, 97% 100%, 0 91%); }
     .veil-stage figure { border: 8px solid rgba(250,251,247,.76); }
     .veil-stage figure::after { content: ""; position: absolute; inset: 0; border: 1px solid rgba(64,83,76,.25); pointer-events: none; }
+    .veil-stage img { filter: blur(10px) saturate(.85); transform: scale(1.045); transition: filter 1.35s ease .15s, transform 1.5s cubic-bezier(.2,.7,.2,1) .15s; }
+    .scene-veil.in-view .veil-stage img { filter: blur(0) saturate(1); transform: scale(1); }
     .scene-veil .scene-note { max-width: 730px; margin-left: auto; }
 
     /* 02 — castle background, pointed arch and curtain/door reveal. */
@@ -228,6 +237,9 @@
 
     .export-mode, .export-mode body { scroll-behavior: auto !important; }
     .export-mode .hero-action, .export-mode .cover-scroll { display: none; }
+    .export-mode .cover-veil { opacity: .2; }
+    .export-mode .hero-waterfall figure { opacity: 1; transform: none; }
+    .export-mode .veil-stage img { filter: none; transform: none; }
     .export-mode .hero-intro { top: 44px; left: 8vw; width: auto; text-align: left; transform: none; }
     .export-mode .hero-intro::before, .export-mode .hero-date { display: none; }
     .export-mode .hero-title { font-size: 36px; }
@@ -243,8 +255,8 @@
       .cover-content { padding-left: 9vw; padding-right: 9vw; }
       .hero-intro { width: 88vw; }
       .hero-title { font-size: 48px; }
-      .hero-waterfall { right: 0; width: 90vw; height: 70%; top: 18%; }
-      .hero-waterfall figure { width: 43%; }
+      .hero-waterfall { right: 0; width: 92vw; height: 74%; top: 16%; }
+      .hero-waterfall figure { width: 45%; }
       .transition-note { padding: 68px 9vw 75px; }
       .scene { padding: 80px 6vw 88px; }
       .scene-head { display: block; margin-bottom: 28px; }
@@ -279,7 +291,8 @@
 <body>
   <main>
     <section class="cover" id="cover" aria-labelledby="cover-title">
-      <img class="cover-media" src="assets/veil-main.webp" alt="新人在白色花幕前的婚纱合影">
+      <img class="cover-media" src="assets/cover-floral.webp" alt="柔美的白色纱幔与花瓣背景">
+      <div class="cover-veil" aria-hidden="true"></div>
       <div class="cover-scrim"></div>
       <div class="cover-frame" aria-hidden="true"></div>
       <div class="cover-content">
@@ -298,6 +311,7 @@
           <figure><img src="assets/hero-white-2724.webp" alt="新人白纱合影一角"></figure>
           <figure><img src="assets/hero-white-2735.webp" alt="新人白纱合影一角"></figure>
           <figure><img src="assets/hero-white-2766.webp" alt="新人白纱合影一角"></figure>
+          <figure><img src="assets/veil-wide.webp" alt="新人白纱合影横幅"></figure>
         </div>
         <div class="cover-scroll">scroll to explore</div>
       </div>
