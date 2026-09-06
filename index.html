@@ -77,30 +77,19 @@
     .hero-action { position: relative; display: inline-grid; place-items: center; width: 150px; height: 66px; margin-top: 34px; border: 0; color: var(--ink); background: transparent; cursor: pointer; }
     .hero-action-label { position: relative; z-index: 2; display: grid; gap: 2px; font-family: var(--sans); font-size: 10px; text-transform: uppercase; }
     .hero-action-label small { font-family: var(--serif); font-size: 12px; text-transform: none; }
-    .wave-ring { position: absolute; border: 1px solid rgba(41,36,32,.48); border-radius: 48% 52% 50% 45%; transform: rotate(-7deg); }
-    .wave-ring:nth-child(1) { inset: 5px 7px; animation: wave-float 2.8s ease-in-out infinite; }
-    .wave-ring:nth-child(2) { inset: 12px 16px; opacity: .55; animation: wave-float 2.8s ease-in-out .4s infinite reverse; }
-    .wave-ring:nth-child(3) { inset: 20px 25px; opacity: .32; animation: wave-float 2.8s ease-in-out .8s infinite; }
+    .wave-ring { position: absolute; border: 1px solid currentColor; border-radius: 48% 52% 50% 45%; transform: rotate(-7deg); }
+    .wave-ring:nth-child(1) { inset: 5px 7px; opacity: .55; animation: wave-float 2.8s ease-in-out infinite; }
+    .wave-ring:nth-child(2) { inset: 12px 16px; opacity: .38; animation: wave-float 2.8s ease-in-out .4s infinite reverse; }
+    .wave-ring:nth-child(3) { inset: 20px 25px; opacity: .22; animation: wave-float 2.8s ease-in-out .8s infinite; }
     .hero-action:focus-visible { outline: 1px solid var(--ink); outline-offset: 5px; }
-    .hero-action:hover .wave-ring { border-color: rgba(41,36,32,.9); }
     @keyframes wave-float { 0%, 100% { border-radius: 48% 52% 50% 45%; transform: rotate(-7deg) scale(1); } 50% { border-radius: 55% 45% 46% 54%; transform: rotate(5deg) scale(1.06); } }
-    .cover-scroll { position: absolute; left: 50%; bottom: max(26px, env(safe-area-inset-bottom)); transform: translateX(-50%); color: rgba(41,36,32,.64); font-family: var(--sans); font-size: 9px; text-transform: uppercase; }
-    .cover-scroll::after { content: ""; display: block; width: 1px; height: 38px; margin: 9px auto 0; background: currentColor; animation: scroll-line 1.8s ease-in-out infinite; transform-origin: top; }
-    @keyframes scroll-line { 0%, 100% { transform: scaleY(.2); opacity: .3; } 50% { transform: scaleY(1); opacity: .9; } }
-    .hero-waterfall { position: absolute; z-index: 1; top: 13%; right: 5vw; width: min(76vw, 560px); height: 76%; opacity: 0; pointer-events: none; transition: opacity .8s ease .3s; }
-    .hero-waterfall figure { position: absolute; width: 44%; margin: 0; overflow: hidden; background: rgba(255,255,255,.38); box-shadow: 0 14px 34px rgba(59,53,46,.12); opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .85s cubic-bezier(.2,.7,.2,1); }
-    .hero-waterfall figure:nth-child(1) { top: 0; right: 3%; }
-    .hero-waterfall figure:nth-child(2) { top: 22%; left: 0; width: 40%; }
-    .hero-waterfall figure:nth-child(3) { top: 43%; right: 8%; width: 38%; }
-    .hero-waterfall figure:nth-child(4) { bottom: 0; left: 1%; width: 82%; }
-    .hero-waterfall img { width: 100%; height: 100%; object-fit: cover; }
-    .hero-waterfall figure:nth-child(-n+3) img { aspect-ratio: 2 / 3; }
-    .hero-waterfall figure:nth-child(4) img { aspect-ratio: 3 / 2; }
-    .is-open .hero-waterfall { opacity: 1; }
-    .is-open .hero-waterfall figure:nth-child(1) { opacity: 1; transform: rotate(-3deg); transition-delay: .12s; }
-    .is-open .hero-waterfall figure:nth-child(2) { opacity: 1; transform: rotate(4deg); transition-delay: .24s; }
-    .is-open .hero-waterfall figure:nth-child(3) { opacity: 1; transform: rotate(-4deg); transition-delay: .36s; }
-    .is-open .hero-waterfall figure:nth-child(4) { opacity: 1; transform: rotate(1.5deg); transition-delay: .48s; }
+    .wave-next { position: relative; display: grid; place-items: center; min-width: 172px; min-height: 58px; margin: 56px auto 0; padding: 0 18px; border: 0; color: inherit; background: transparent; cursor: pointer; font: inherit; transition: transform .3s ease; }
+    .wave-next .wave-next-label { position: relative; z-index: 2; display: grid; gap: 2px; justify-items: center; font-family: var(--sans); font-size: 9px; text-transform: uppercase; }
+    .wave-next .wave-next-label small { font-family: var(--serif); font-size: 13px; text-transform: none; }
+    .wave-next:focus-visible { outline: 1px solid currentColor; outline-offset: 5px; }
+    .wave-next:hover { transform: translateY(-2px); }
+    .cover-next { position: absolute; left: 50%; bottom: max(30px, env(safe-area-inset-bottom)); margin: 0; transform: translate(-50%, 10px); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .8s ease .45s, transform .8s ease .45s, visibility 0s linear .8s; }
+    .is-open .cover-next { opacity: 1; visibility: visible; pointer-events: auto; transform: translate(-50%, 0); transition-delay: .45s, .45s, 0s; }
     .is-open .cover-scrim { opacity: .3; }
     .is-open .cover-supra span:first-child { opacity: 0; }
     .is-open .hero-intro { top: max(34px, env(safe-area-inset-top)); left: 8vw; width: auto; text-align: left; transform: translate(0,0); }
@@ -110,8 +99,6 @@
     .is-open .hero-title span { display: inline; }
     .is-open .hero-title .amp { margin: 0 .12em; }
     .is-open .hero-subtitle { margin-top: 6px; font-size: 8px; }
-    .is-open .hero-waterfall { opacity: .95; }
-    .is-open .cover-scroll { opacity: .4; }
 
     .transition-note { position: relative; padding: 80px 8vw 86px; background: var(--paper); text-align: center; }
     .transition-note::before { content: ""; position: absolute; top: 0; left: 50%; width: 1px; height: 36px; background: var(--line); }
@@ -237,21 +224,14 @@
 
     /* When GSAP drives motion, CSS entrance transitions stand down (avoids per-frame interpolation lag);
        transforms/opacities stay free for GSAP inline styles, and final states remain visible for fallbacks. */
-    html.gsap-on .hero-waterfall figure, html.gsap-on .is-open .hero-waterfall figure { transition: none !important; }
     html.gsap-on .veil-stage img { filter: none; transform: none; transition: none !important; }
     html.gsap-on .salon-stage figure { opacity: 1; transition: none !important; }
     html.gsap-on .silk-stroke, html.gsap-on .garden-vine { transition: none !important; }
 
     .export-mode, .export-mode body { scroll-behavior: auto !important; }
-    .export-mode .hero-action, .export-mode .cover-scroll { display: none; }
+    .export-mode .hero-action, .export-mode .wave-next { display: none !important; }
     .export-mode .cover-veil { opacity: .2; }
-    .export-mode .hero-waterfall figure { opacity: 1; transform: none; }
     .export-mode .veil-stage img { filter: none; transform: none; }
-    .export-mode .hero-intro { top: 44px; left: 8vw; width: auto; text-align: left; transform: none; }
-    .export-mode .hero-intro::before, .export-mode .hero-date { display: none; }
-    .export-mode .hero-title { font-size: 36px; }
-    .export-mode .hero-title span { display: inline; }
-    .export-mode .hero-waterfall { opacity: .95; }
     .export-mode .scene-stage figure { opacity: 1; }
     .export-mode .salon-main, .export-mode .salon-detail, .export-mode .salon-wide { transform: none; }
     .export-mode .vow-main, .export-mode .vow-detail, .export-mode .vow-wide { transform: none; }
@@ -262,8 +242,6 @@
       .cover-content { padding-left: 9vw; padding-right: 9vw; }
       .hero-intro { width: 88vw; }
       .hero-title { font-size: 48px; }
-      .hero-waterfall { right: 0; width: 92vw; height: 74%; top: 16%; }
-      .hero-waterfall figure { width: 45%; }
       .transition-note { padding: 68px 9vw 75px; }
       .scene { padding: 80px 6vw 88px; }
       .scene-head { display: block; margin-bottom: 28px; }
@@ -314,13 +292,10 @@
             <span class="hero-action-label"><span>open invitation</span><small>开启请柬</small></span>
           </button>
         </div>
-        <div class="hero-waterfall" id="invitation-flow" aria-hidden="true">
-          <figure><img src="assets/hero-white-2724.webp" alt="新人白纱合影一角"></figure>
-          <figure><img src="assets/hero-white-2735.webp" alt="新人白纱合影一角"></figure>
-          <figure><img src="assets/hero-white-2766.webp" alt="新人白纱合影一角"></figure>
-          <figure><img src="assets/veil-wide.webp" alt="新人白纱合影横幅"></figure>
-        </div>
-        <div class="cover-scroll">scroll to explore</div>
+        <button class="wave-next cover-next" type="button" data-target="invitation-note">
+          <i class="wave-ring" aria-hidden="true"></i><i class="wave-ring" aria-hidden="true"></i><i class="wave-ring" aria-hidden="true"></i>
+          <span class="wave-next-label"><span>turn the page</span><small>翻阅寄语</small></span>
+        </button>
       </div>
     </section>
 
@@ -329,6 +304,10 @@
       <h2>我们想把这一刻，<br>和你一起收藏。</h2>
       <p>从一袭白纱，到一方庭院；<br>从相遇，到决定把往后的日子写在一起。<br>敬备喜宴，恭候光临。</p>
       <div class="divider"></div>
+      <button class="wave-next" type="button" data-target="scene-veil">
+        <i class="wave-ring" aria-hidden="true"></i><i class="wave-ring" aria-hidden="true"></i><i class="wave-ring" aria-hidden="true"></i>
+        <span class="wave-next-label"><span>first scene</span><small>进入第一幕 · 白纱初见</small></span>
+      </button>
     </section>
 
     <article class="scene scene-veil" id="scene-veil">
@@ -344,6 +323,10 @@
           <figure class="veil-wide"><img src="assets/veil-wide.webp" alt="新人在白色花幕前的轻松合影"><figcaption>just us</figcaption></figure>
         </div>
         <div class="scene-note"><span>Scene note</span><p>愿每一个重要的开始，都有熟悉的身影在场。</p></div>
+        <button class="wave-next" type="button" data-target="scene-salon">
+          <i class="wave-ring" aria-hidden="true"></i><i class="wave-ring" aria-hidden="true"></i><i class="wave-ring" aria-hidden="true"></i>
+          <span class="wave-next-label"><span>next scene</span><small>下一幕 · 灯影相逢</small></span>
+        </button>
       </div>
     </article>
 
@@ -360,6 +343,10 @@
           <figure class="salon-wide"><img src="assets/salon-wide.webp" alt="新人在古典墙面前的合影"><figcaption>stay awhile</figcaption></figure>
         </div>
         <div class="scene-note"><span>Scene note</span><p>谢谢你见证我们把心意说出口，也把掌声留给这一晚。</p></div>
+        <button class="wave-next" type="button" data-target="scene-vow">
+          <i class="wave-ring" aria-hidden="true"></i><i class="wave-ring" aria-hidden="true"></i><i class="wave-ring" aria-hidden="true"></i>
+          <span class="wave-next-label"><span>next scene</span><small>下一幕 · 朱红成礼</small></span>
+        </button>
       </div>
     </article>
 
@@ -376,6 +363,10 @@
           <figure class="vow-wide"><img src="assets/vow-wide.webp" alt="新人在暖色室内的合影"><figcaption>side by side</figcaption></figure>
         </div>
         <div class="scene-note"><span>Scene note</span><p>愿我们珍惜每一次相逢，也珍惜你专程而来的心意。</p></div>
+        <button class="wave-next" type="button" data-target="scene-garden">
+          <i class="wave-ring" aria-hidden="true"></i><i class="wave-ring" aria-hidden="true"></i><i class="wave-ring" aria-hidden="true"></i>
+          <span class="wave-next-label"><span>next scene</span><small>下一幕 · 花园赴约</small></span>
+        </button>
       </div>
     </article>
 
@@ -392,6 +383,10 @@
           <figure class="garden-wide"><img src="assets/garden-wide.webp" alt="新人在花园中的横幅合影"><figcaption>with our people</figcaption></figure>
         </div>
         <div class="scene-note"><span>Scene note</span><p>这一次，请把时间留给我们。等你在花园里，赴这一场温柔的约。</p></div>
+        <button class="wave-next" type="button" data-target="details">
+          <i class="wave-ring" aria-hidden="true"></i><i class="wave-ring" aria-hidden="true"></i><i class="wave-ring" aria-hidden="true"></i>
+          <span class="wave-next-label"><span>the details</span><small>查看赴宴信息</small></span>
+        </button>
       </div>
     </article>
 
@@ -408,6 +403,10 @@
         </dl>
         <div class="action-bar"><a class="action" data-bind-href="rsvpUrl" href="#" aria-disabled="true">RSVP 出席登记</a><a class="action secondary" data-bind-href="amapUri" href="#" target="_blank" rel="noopener" data-bind-text="mapLabel">高德导航</a></div>
         <div class="closing"><p>敬邀<br><strong data-bind="names"></strong></p><div class="closing-mark">save the date<br><span data-bind="date"></span></div></div>
+        <button class="wave-next" type="button" data-target="cover">
+          <i class="wave-ring" aria-hidden="true"></i><i class="wave-ring" aria-hidden="true"></i><i class="wave-ring" aria-hidden="true"></i>
+          <span class="wave-next-label"><span>back to top</span><small>回到首页 · 重新翻阅</small></span>
+        </button>
       </div>
     </section>
     <footer>Made with love · <span data-bind="date"></span></footer>
@@ -435,7 +434,6 @@
     const root = document.documentElement;
     const cover = document.querySelector('.cover');
     const openButton = document.getElementById('open-invitation');
-    const waterfall = document.getElementById('invitation-flow');
     const markReady = () => root.classList.add('is-ready');
     Promise.all([...document.images].map((image) => image.decode ? image.decode().catch(() => {}) : Promise.resolve())).then(markReady);
     if (document.readyState === 'complete') markReady(); else addEventListener('load', markReady, { once: true });
@@ -455,22 +453,30 @@
         .from('.hero-subtitle', { y: 18, autoAlpha: 0, duration: .7 }, 1.05)
         .from('.hero-date', { y: 18, autoAlpha: 0, duration: .7 }, 1.15)
         .from('.hero-action', { y: 24, autoAlpha: 0, scale: .92, duration: .85, ease: 'back.out(1.6)' }, 1.3)
-        .from('.cover-scroll', { autoAlpha: 0, duration: .9 }, 1.6);
     }
 
     openButton.addEventListener('click', () => {
       const open = root.classList.toggle('is-open');
       openButton.setAttribute('aria-expanded', String(open));
-      waterfall.setAttribute('aria-hidden', String(!open));
-      openButton.querySelector('.hero-action-label').innerHTML = open ? '<span>invitation opened</span><small>已开启 · 向下探索</small>' : '<span>open invitation</span><small>开启请柬</small>';
+      openButton.querySelector('.hero-action-label').innerHTML = open ? '<span>invitation opened</span><small>已开启 · 点击下方翻页</small>' : '<span>open invitation</span><small>开启请柬</small>';
       cover.setAttribute('data-open', String(open));
-      if (gsapOn && open) {
-        gsap.timeline({ defaults: { ease: 'power3.out' } })
-          .fromTo('.hero-waterfall figure',
-            { autoAlpha: 0, y: 66, rotation: 0, scale: .95 },
-            { autoAlpha: 1, y: 0, scale: 1, rotation: (i) => [-3, 4, -4, 1.5][i], duration: .95, stagger: .13, ease: 'back.out(1.5)' }, .22);
-      }
     });
+
+    document.querySelectorAll('.wave-next').forEach((button) => {
+      button.addEventListener('click', () => {
+        const target = document.getElementById(button.dataset.target);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    // Safety net: if the rAF clock is suspended (rare low-power/webview states), settle frozen timelines so content never stays hidden.
+    if (gsapOn) {
+      window.setInterval(() => {
+        if (gsap.globalTimeline.time() === 0 && gsap.globalTimeline.children(true).length) {
+          gsap.globalTimeline.children(true).forEach((tween) => tween.progress(1));
+        }
+      }, 2000);
+    }
 
     const played = new WeakSet();
     function playScene(scene) {
@@ -478,10 +484,13 @@
       played.add(scene);
       const figures = scene.querySelectorAll('.scene-stage figure');
       const note = scene.querySelector('.scene-note');
+      const nextButton = scene.querySelector('.wave-next');
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-      tl.from(scene.querySelector('.scene-backdrop'), { autoAlpha: 0, scale: 1.1, duration: 1.9, ease: 'power2.out' }, 0)
-        .from(scene.querySelector('.scene-shade'), { autoAlpha: 0, duration: 1.3 }, 0)
-        .from(scene.querySelector('.scene-index'), { y: 14, autoAlpha: 0, duration: .6 }, .1)
+      const backdrop = scene.querySelector('.scene-backdrop');
+      const shade = scene.querySelector('.scene-shade');
+      if (backdrop) tl.from(backdrop, { autoAlpha: 0, scale: 1.1, duration: 1.9, ease: 'power2.out' }, 0);
+      if (shade) tl.from(shade, { autoAlpha: 0, duration: 1.3 }, 0);
+      tl.from(scene.querySelector('.scene-index'), { y: 14, autoAlpha: 0, duration: .6 }, .1)
         .from(scene.querySelector('.scene-head h2'), { y: 38, autoAlpha: 0, duration: .95, ease: 'expo.out' }, .18)
         .from(scene.querySelector('.scene-english'), { x: 16, autoAlpha: 0, duration: .7 }, .42)
         .from(scene.querySelector('.scene-copy'), { y: 24, autoAlpha: 0, duration: .8 }, .5);
@@ -501,6 +510,7 @@
           .fromTo(scene.querySelector('.garden-vine'), { scaleY: 0, rotation: -9 }, { scaleY: 1, rotation: -9, transformOrigin: 'top center', duration: 1, ease: 'power2.out' }, .95);
       }
       tl.from(note, { y: 20, autoAlpha: 0, duration: .7 }, '>-=.35');
+      if (nextButton) tl.from(nextButton, { autoAlpha: 0, y: 16, duration: .6 }, '>-=.15');
     }
 
     const scenes = document.querySelectorAll('.scene');
@@ -516,7 +526,7 @@
       const observer = new IntersectionObserver((entries) => entries.forEach((entry) => { if (entry.isIntersecting) { activateScene(entry.target); observer.unobserve(entry.target); } }), { threshold: .18 });
       scenes.forEach((scene) => observer.observe(scene));
     } else scenes.forEach(activateScene);
-    if (new URLSearchParams(location.search).has('export')) { root.classList.add('export-mode', 'is-ready', 'is-open'); scenes.forEach((scene) => scene.classList.add('in-view')); }
+    if (new URLSearchParams(location.search).has('export')) { root.classList.add('export-mode', 'is-ready'); scenes.forEach((scene) => scene.classList.add('in-view')); }
   </script>
 </body>
 </html>
